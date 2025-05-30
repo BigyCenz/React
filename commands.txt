@@ -1,0 +1,12 @@
+git config --global user.name "BigyCenz"
+git config --global user.email "tua-email@esempio.com"
+
+git clone https://github.com/BigyCenz/React.git
+cd React
+
+git add .
+git commit -m "Aggiunto file iniziale"
+
+git push origin main (oppure git push origin master)
+
+git pull origin main
