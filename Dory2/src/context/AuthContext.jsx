@@ -1,53 +1,50 @@
-import React, { createContext, useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom'; // <-- usa questo al posto di useHistory
-import { loginUser, registerUser, logoutUser } from '../api';
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import { logout } from './logoutHandler';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
-    const navigate = useNavigate(); // <-- corretto
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // 👈 gestione stato iniziale
 
-    const login = async (credentials) => {
-        try {
-            const userData = await loginUser(credentials);
-            setUser(userData);
-            navigate('/'); // Redirect to home
-        } catch (error) {
-            console.error("Login failed:", error);
-        }
-    };
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decoded = jwtDecode(token);
+        const identity = decoded.sub || decoded;
+        setUser(identity);
+      } catch (e) {
+        logout(); // token invalido → logout
+      }
+    }
+    setLoading(false); // 👈 sempre dopo il tentativo
+  }, []);
 
-    const register = async (userData) => {
-        try {
-            await registerUser(userData);
-            await login(userData); // Auto-login
-        } catch (error) {
-            console.error("Registration failed:", error);
-        }
-    };
+  const login = (token) => {
+    localStorage.setItem('token', token);
+    try {
+      const decoded = jwtDecode(token);
+      const identity = decoded.sub || decoded;
+      setUser(identity);
+    } catch (e) {
+      logout();
+    }
+  };
 
-    const logout = async () => {
-        await logoutUser();
-        setUser(null);
-        navigate('/login'); // Redirect to login
-    };
+  const handleLogout = () => {
+    logout();
+    setUser(null);
+  };
 
-    useEffect(() => {
-        const checkUserSession = async () => {
-            // TODO: Implementa controllo sessione se necessario
-        };
-        checkUserSession();
-    }, []);
+  const isAuthenticated = !!user;
 
-    return (
-        <AuthContext.Provider value={{ user, login, register, logout }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  return (
+    <AuthContext.Provider value={{ user, login, logout: handleLogout, isAuthenticated, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
-// Custom hook per usare il contesto
-export const useAuth = () => {
-    return useContext(AuthContext);
-};
+export const useAuth = () => useContext(AuthContext);

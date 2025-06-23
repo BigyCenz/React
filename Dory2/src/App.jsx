@@ -1,14 +1,8 @@
-import { useState } from 'react'
+import React from 'react';
+import Login from './pages/Login';
 
+const App = () => {
+  return <Login />;
+};
 
-function App() {
-
-
-  return (
-    <>
-        FRANCOFOXXXXX
-    </>
-  )
-}
-
-export default App
+export default App;

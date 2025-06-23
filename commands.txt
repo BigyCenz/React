@@ -1,3 +1,5 @@
+---- CONFIGURAZIONE GIT ----
+
 git config --global user.name "BigyCenz"
 git config --global user.email "BigyCenz@protonmail.com"
 
@@ -10,3 +12,15 @@ git commit -m "Aggiunto file iniziale"
 git push origin main (oppure git push origin master)
 
 git pull origin main
+
+---- REACT ----
+
+npm run dev (da cartella progetto)
+
+
+---- MUI ----
+
+https://mui.com/material-ui/getting-started/installation/
+
+npm install @mui/material @emotion/react @emotion/styled
+
