@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import {
   Box, Typography, TextField, Button, Card, CardContent, CardActions,
-  Grid, Dialog, DialogTitle, DialogContent, DialogActions, Snackbar, Alert, Select, MenuItem, InputLabel, FormControl
+  Grid, Dialog, DialogTitle, DialogContent, DialogActions, Snackbar, Alert, Select, MenuItem, InputLabel, FormControl, Divider
 } from '@mui/material';
 import { getLocations, creaLocation, eliminaLocation, aggiornaLocation } from '../api/location';
 import { getClienti } from '../api/clienti';
-
 
 const Location = () => {
   const [locations, setLocations] = useState([]);
@@ -18,18 +17,23 @@ const Location = () => {
   const [messaggio, setMessaggio] = useState('');
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarTipo, setSnackbarTipo] = useState('success');
-
   const [clienti, setClienti] = useState([]);
+  const [groupedLocations, setGroupedLocations] = useState({});
 
-
-useEffect(() => {
-  caricaLocations();
-  caricaClienti();
-}, []);
+  useEffect(() => {
+    caricaLocations();
+    caricaClienti();
+  }, []);
 
   const caricaLocations = async () => {
     const data = await getLocations();
-    setLocations(data);
+    const grouped = data.reduce((acc, loc) => {
+      const cliente = loc.CLI_NAME || 'Sconosciuto';
+      if (!acc[cliente]) acc[cliente] = [];
+      acc[cliente].push(loc);
+      return acc;
+    }, {});
+    setGroupedLocations(grouped);
   };
 
   const caricaClienti = async () => {
@@ -54,7 +58,6 @@ useEffect(() => {
       }
     }
   };
-  
 
   const handleApriElimina = (loc) => {
     setLocationDaEliminare(loc);
@@ -105,42 +108,48 @@ useEffect(() => {
           />
           <Button variant="contained" onClick={handleCreaLocation}>Crea</Button>
         </Box>
-        <FormControl sx={{ minWidth: 200}}>
-        <InputLabel>Cliente</InputLabel>
-            <Select
-                value={nuovaLocation.cliente_id}
-                label="Cliente"
-                onChange={(e) => setNuovaLocation({ ...nuovaLocation, cliente_id: e.target.value })}
-            >
-                {clienti.map(cli => (
-                <MenuItem key={cli.CLI_COD} value={cli.CLI_COD}>
-                    {cli.CLI_NAME}
-                </MenuItem>
-                ))}
-            </Select>
+        <FormControl sx={{ minWidth: 200, mt: 2 }}>
+          <InputLabel>Cliente</InputLabel>
+          <Select
+            value={nuovaLocation.cliente_id}
+            label="Cliente"
+            onChange={(e) => setNuovaLocation({ ...nuovaLocation, cliente_id: e.target.value })}
+          >
+            {clienti.map(cli => (
+              <MenuItem key={cli.CLI_COD} value={cli.CLI_COD}>
+                {cli.CLI_NAME}
+              </MenuItem>
+            ))}
+          </Select>
         </FormControl>
       </Box>
 
-      <Grid container spacing={2}>
-        {locations.map(loc => (
-          <Grid item xs={12} sm={6} md={4} key={loc.LOC_COD}>
-            <Card>
-              <CardContent>
-                <Typography variant="h6">{loc.LOC_NAME}</Typography>
-                <Typography variant="body2">ID: {loc.LOC_COD}</Typography>
-              </CardContent>
-              <CardActions>
-                <Button size="small" color="primary" onClick={() => {
-                  setLocationDaModificare(loc);
-                  setNomeModificato(loc.LOC_NAME);
-                  setOpenEditDialog(true);
-                }}>Modifica</Button>
-                <Button size="small" color="error" onClick={() => handleApriElimina(loc)}>Elimina</Button>
-              </CardActions>
-            </Card>
+      {Object.entries(groupedLocations).map(([cliente, locs]) => (
+        <Box key={cliente} sx={{ mb: 4 }}>
+          <Typography variant="h6" sx={{ mb: 1 }}>{cliente}</Typography>
+          <Divider sx={{ mb: 2 }} />
+          <Grid container spacing={2}>
+            {locs.map(loc => (
+              <Grid item xs={12} sm={6} md={4} key={loc.LOC_COD}>
+                <Card>
+                  <CardContent>
+                    <Typography variant="h6">{loc.LOC_NAME}</Typography>
+                    <Typography variant="body2">ID: {loc.LOC_COD}</Typography>
+                  </CardContent>
+                  <CardActions>
+                    <Button size="small" color="primary" onClick={() => {
+                      setLocationDaModificare(loc);
+                      setNomeModificato(loc.LOC_NAME);
+                      setOpenEditDialog(true);
+                    }}>Modifica</Button>
+                    <Button size="small" color="error" onClick={() => handleApriElimina(loc)}>Elimina</Button>
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))}
           </Grid>
-        ))}
-      </Grid>
+        </Box>
+      ))}
 
       <Dialog open={openConfirm} onClose={() => setOpenConfirm(false)}>
         <DialogTitle>Conferma eliminazione</DialogTitle>
