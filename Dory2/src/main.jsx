@@ -7,6 +7,7 @@ import DashboardHome from './pages/DashboardHome.jsx';
 import Clienti from './pages/Clienti.jsx';
 import Location from './pages/Location.jsx';
 import Categorie from './pages/Categorie.jsx';
+import Macchine from './pages/Macchine.jsx';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
 import { AuthProvider } from './context/AuthContext';
@@ -24,8 +25,8 @@ const router = createBrowserRouter([
       { path: '', element: <DashboardHome /> },
       { path: 'clienti', element: <Clienti /> },
       { path: 'locations', element: <Location /> },
-      { path: 'categorie', element: <Categorie /> }
-      //{ path: 'macchine', element: <Macchine /> },
+      { path: 'categorie', element: <Categorie /> },
+      { path: 'macchine', element: <Macchine /> }
     ]
   }
 ]);

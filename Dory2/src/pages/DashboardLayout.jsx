@@ -30,6 +30,7 @@ const DashboardLayout = () => {
         <Button fullWidth sx={{ color: 'white' }} onClick={() => navigate('/dashboard/clienti')}>Clienti</Button>
         <Button fullWidth sx={{ color: 'white' }} onClick={() => navigate('/dashboard/locations')}>Locations</Button>
         <Button fullWidth sx={{ color: 'white' }} onClick={() => navigate('/dashboard/categorie')}>Categorie</Button>
+        <Button fullWidth sx={{ color: 'white' }} onClick={() => navigate('/dashboard/macchine')}>Macchine</Button>
         <Button fullWidth sx={{ color: 'white' }} onClick={logout}>Logout</Button>
       </Box>
 
