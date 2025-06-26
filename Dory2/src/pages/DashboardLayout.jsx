@@ -27,6 +27,7 @@ const DashboardLayout = () => {
         <Divider sx={{ my: 2, borderColor: 'white' }} />
 
         <Button fullWidth sx={{ color: 'white' }} onClick={() => navigate('/dashboard')}>Home</Button>
+        <Button fullWidth sx={{ color: 'white' }} onClick={() => navigate('/dashboard/pannelli')}>Pannelli</Button>
         <Button fullWidth sx={{ color: 'white' }} onClick={() => navigate('/dashboard/clienti')}>Clienti</Button>
         <Button fullWidth sx={{ color: 'white' }} onClick={() => navigate('/dashboard/locations')}>Locations</Button>
         <Button fullWidth sx={{ color: 'white' }} onClick={() => navigate('/dashboard/categorie')}>Categorie</Button>

@@ -8,6 +8,8 @@ import Clienti from './pages/Clienti.jsx';
 import Location from './pages/Location.jsx';
 import Categorie from './pages/Categorie.jsx';
 import Macchine from './pages/Macchine.jsx';
+import Pannelli from './pages/Pannelli.jsx';
+import Test from './pages/Test.jsx';
 import ProtectedRoute from './components/ProtectedRoute';
 import PublicRoute from './components/PublicRoute';
 import { AuthProvider } from './context/AuthContext';
@@ -23,10 +25,12 @@ const router = createBrowserRouter([
     element: <ProtectedRoute><DashboardLayout /></ProtectedRoute>,
     children: [
       { path: '', element: <DashboardHome /> },
+      { path: 'pannelli', element: <Pannelli /> },
       { path: 'clienti', element: <Clienti /> },
       { path: 'locations', element: <Location /> },
       { path: 'categorie', element: <Categorie /> },
-      { path: 'macchine', element: <Macchine /> }
+      { path: 'macchine', element: <Macchine /> },
+      { path: 'test', element: <Test /> }
     ]
   }
 ]);
